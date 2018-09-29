@@ -9,7 +9,7 @@
 const PROMPT = require('readline-sync');
 
 
-let custID, age, premium, numAtFault, rerun = 1;
+let custID, age, premium, numAtFault, rerun = 1, todayDate, bDate, bMonth, bYear, birthDate, mSecAge;
 let firstName, lastName;
 
 /**
@@ -22,7 +22,7 @@ function main() {
         setCustID();
         setFirstName();
         setLastName();
-        setCustAge();
+        setBirthDay();
         setNumAtFault();
         setPremium();
         printPremium();
@@ -34,6 +34,26 @@ function main() {
 }
 
 main();
+
+function setBirthDay() {
+    const MIN_AGE = 16,
+        MAX_AGE = 120;
+    console.log(`\nWhat is ` + firstName + `'s birth date? [mm/dd/yyyy]`);
+    bMonth = Number(PROMPT.question(`Month of birth: `));
+    bDate = Number(PROMPT.question(`Day of birth: `));
+    bYear = Number(PROMPT.question(`Year of birth: `));
+
+    birthDate = new Date(bYear,bMonth,bDate);
+    todayDate = new Date();
+    mSecAge = todayDate-birthDate; // This is the difference in milliseconds
+    age = Math.floor(mSecAge/31557600000); // Divide by 1000*60*60*24*365.25
+
+    if (age < MIN_AGE || age > MAX_AGE) {
+        console.log(`\nI'm sorry but `+ age + ` is not an insurable age for this company. Please enter a correct Date of Birth.`);
+        return setBirthDay();
+    }
+
+}
 
 /**
  * @method
@@ -71,19 +91,6 @@ function setLastName() {
     lastName = PROMPT.question(`\nPlease enter ` + firstName + `'s last name: `);
 }
 
-/**
- * @method
- * @desc  mutator
- * @returns {null}
- */
-function setCustAge() {
-    const MIN_AGE  = 16
-    age = Number(PROMPT.question(`\nWhat is ` + firstName + `'s age: `));
-        if (age < MIN_AGE) {
-            console.log(`\nCustomer to young, Please enter proper age:`);
-            return setCustAge();
-        }
-}
 
 
 /**
@@ -117,11 +124,11 @@ function setPremium() {
 
 function printPremium() {
     process.stdout.write('\x1Bc');
-    console.log(`\nThe premium cost for ` + firstName + ` ` + lastName + ` who is ` + age + `, and has had ` + numAtFault + ` at fault accidents in the past three years, will be $` + premium + `.` + `\nYour policy number is `+ custID + ` and your first premium will be do on "ADD DATE HERE".`);
+    console.log(`\nThe premium cost for ` + firstName + ` ` + lastName + ` who is ` + age + `, and has had ` + numAtFault + ` at fault accident(s) in the past three years, will be $` + premium + `.` + `\nYour policy number is `+ custID + ` and your first premium will be do on "ADD DATE HERE".`);
 }
 
 function setRerun() {
-    rerun = 0
+    rerun = 0;
     rerun = Number(PROMPT.question(`\nTo make another quote enter "1", any other value to quit:`));
 }
 
