@@ -8,7 +8,7 @@
 "use strict";
 const PROMPT = require('readline-sync');
 
-let rerun = 1; // sets rerun to allow to run
+let rerun = 1; // presets rerun to allow first run
 let custID, age, premium, numAtFault, todayDate, bDate, bMonth, bYear, birthDate, mSecAge, mSecDue, dueDate, dMonth, dDay, dYear;
 let firstName, lastName;
 
@@ -33,7 +33,8 @@ main();
 function setBirthDay() { // creates age and due date
     const MIN_AGE = 16,
         MAX_AGE = 120,
-        FUT_DATE = (864000000); //1000*60*60*24*10
+        MILLI_YEAR = 31557600000, // 1000*60*60*24*365.25 = 1 Year in milliseconds
+        FUT_DATE = (864000000); //1000*60*60*24*10 = 10 days in milliseconds
     console.log(`\nWhat is ` + firstName + `'s birth date? [mm/dd/yyyy]`);
     bMonth = Number(PROMPT.question(`Month of birth: `));
     bDate = Number(PROMPT.question(`Day of birth: `));
@@ -41,7 +42,7 @@ function setBirthDay() { // creates age and due date
     birthDate = new Date(bYear,bMonth,bDate); // DOB in milliseconds
     todayDate = Number(new Date()); //Todays date in milliseconds
     mSecAge = todayDate-birthDate; // Age in milliseconds
-    age = Math.floor(mSecAge/31557600000); // converts millisecond age to years
+    age = Math.floor(mSecAge/MILLI_YEAR); // converts millisecond age to years
     mSecDue = (todayDate+FUT_DATE); // Due date in milliseconds
     dueDate = new Date(mSecDue); // due date in string
     dMonth = dueDate.getMonth(); // extract month
@@ -55,7 +56,7 @@ function setBirthDay() { // creates age and due date
 }
 
 function setCustID() {
-    custID = Math.floor((Math.random() * 999999) + 100000);
+    custID = Math.floor((Math.random() * 999999) + 100000); // randomly creates six digit policy number
 }
 
 function setNumAtFault() {
@@ -71,7 +72,6 @@ function setLastName() {
 }
 
 function setPremium() {
-    premium = 0;
     const YOUNG_AGE = 20,
         MID_AGE = 10,
         SENIOR_AGE = 30,
@@ -95,7 +95,7 @@ function printPremium() {
 }
 
 function setRerun() {
-    rerun = 0; // sets prg to end
+    rerun = 0; // defaults prg to end, could be anything but 1
     rerun = Number(PROMPT.question(`\nTo make another quote enter "1", any other value to quit:`)); //any value except 1 will end prg
 }
 
